@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Video Search & Embed</title>
+  <style>
+    .gcse-searchresults-only {
+      margin-top: 20px;
+    }
+    iframe {
+      width: 100%;
+      height: 400px;
+      margin-top: 10px;
+    }
+    .search-results a {
+      color: blue;
+      text-decoration: none;
+    }
+    .search-results div {
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>YouTube Video Search</h1>
+  <input type="text" id="searchInput" placeholder="Search for a video">
+  <button onclick="search()">Search</button>
+
+  <div id="results"></div>
+
+  <script async src="https://cse.google.com/cse.js?cx=774887c78ff2e43b7"></script>
+  <div class="gcse-searchresults-only"></div>
+
+  <script>
+    // Function to initialize search and capture results
+    function search() {
+      const query = document.getElementById('searchInput').value;
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = 'Searching...';
+
+      // Add the search query for the CSE
+      const searchUrl = `https://www.google.com/search?q=site:youtube.com/watch?v=${encodeURIComponent(query)}`;
+      
+      fetch(searchUrl)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const links = Array.from(doc.querySelectorAll('a')).map(a => a.href);
+          const videoLinks = [...new Set(links.filter(l => l.includes('youtube.com/watch?v=')))].slice(0, 5);
+
+          resultsDiv.innerHTML = ''; // Clear the current results
+
+          // Display results
+          videoLinks.forEach(link => {
+            const url = new URL(link);
+            const videoId = url.searchParams.get('v');
+            if (videoId) {
+              const container = document.createElement('div');
+              container.className = 'search-results';
+              container.innerHTML = `
+                <a href="${link}" target="_blank">Watch on YouTube</a>
+                <button onclick="embedVideo('${videoId}')">Embed Video</button>
+                <div id="embed-${videoId}"></div>
+              `;
+              resultsDiv.appendChild(container);
+            }
+          });
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          resultsDiv.innerHTML = 'No results found.';
+        });
+    }
+
+    // Function to embed the video
+    function embedVideo(videoId) {
+      const embedDiv = document.getElementById(`embed-${videoId}`);
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube.com/embed/${videoId}`;
+      iframe.allow = 'autoplay; encrypted-media';
+      iframe.allowFullscreen = true;
+      embedDiv.innerHTML = ''; // Clear any previous embeds
+      embedDiv.appendChild(iframe);
+    }
+  </script>
+</body>
+</html>

@@ -41,7 +41,8 @@
       resultsDiv.innerHTML = 'Searching...';
 
       // Add the search query for the CSE
-      const searchUrl = `https://www.youtube.com/watch?v=${encodeURIComponent(query)}`;
+      const searchUrl = `(query)`;
+      // const searchUrl = `https://www.google.com/search?q=site:youtube.com/watch?v=${encodeURIComponent(query)}`;
       
       fetch(searchUrl)
         .then(res => res.text())

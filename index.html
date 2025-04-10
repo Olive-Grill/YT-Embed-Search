@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTube Video Search & Embed</title>
+  <title></n></n>YouTube Video Search & Embed</title>
   <style>
     .gcse-searchresults-only {
       margin-top: 20px;
@@ -41,8 +41,7 @@
       resultsDiv.innerHTML = 'Searching...';
 
       // Add the search query for the CSE
-      const searchUrl = `(query)`;
-      // const searchUrl = `https://www.google.com/search?q=site:youtube.com/watch?v=${encodeURIComponent(query)}`;
+      const searchUrl = `https://www.google.com/search?q=site:youtube.com/watch?v=${encodeURIComponent(query)}`;
       
       fetch(searchUrl)
         .then(res => res.text())
